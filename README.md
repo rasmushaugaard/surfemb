@@ -40,10 +40,10 @@ Extract the datasets under ```data/bop``` (or make a symbolic link).
 
 ## Model
 
-Download a trained model from the release section, eg.:
+Download a trained model (see *releases*):
 
 ```shell
-$ wget https://github.com/rasmushaugaard/surfemb/releases/download/v0.0.1/tless-2rs64lwh.ckpt -P data/models
+$ wget https://github.com/rasmushaugaard/surfemb/releases/download/v0.0.1/tless-2rs64lwh.compact.ckpt -P data/models
 ```
 
 **OR**
