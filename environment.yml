@@ -1,0 +1,22 @@
+name: surfemb
+dependencies:
+  - python=3.8
+  - pip
+  - pytorch::pytorch
+  - pytorch::torchvision
+  - cudatoolkit=10.2
+  - pyg::pytorch-scatter
+  - conda-forge::imgaug
+  - conda-forge::albumentations
+  - py-opencv
+  - numpy
+  - matplotlib
+  - scipy
+  - pip:
+      - tqdm
+      - moderngl
+      - pytorch_lightning
+      - wandb
+      - trimesh
+      - rtree
+      - pymeshlab
