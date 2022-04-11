@@ -36,7 +36,7 @@ def main():
     parser.add_argument('--num-workers', type=int, default=None)
     parser.add_argument('--min-visib-fract', type=float, default=0.1)
     parser.add_argument('--max-steps', type=int, default=500_000)
-    parser.add_argument('--gpu', type=int, nargs='+', default=[0])
+    parser.add_argument('--gpus', type=int, nargs='+', default=[0])
     parser.add_argument('--debug', action='store_true')
     parser.add_argument('--ckpt', default=None)
     parser.add_argument('--no-synth', dest='synth', action='store_false')

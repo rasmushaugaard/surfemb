@@ -78,7 +78,9 @@ $ unzip inference_data.zip
 
 ### Surface samples
 
-First, flip the normals of ITODD object 18, which is inside out. Then remove invisible parts of the object
+First, flip the normals of ITODD object 18, which is inside out. 
+
+Then remove invisible parts of the objects
 
 ```shell
 $ python -m surfemb.scripts.misc.surface_samples_remesh_visible [dataset] 
