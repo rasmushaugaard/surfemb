@@ -25,7 +25,7 @@ mlp_class_dict = dict(
 class SurfaceEmbeddingModel(pl.LightningModule):
     def __init__(self, n_objs: int, emb_dim=12, n_pos=1024, n_neg=1024, lr_cnn=3e-4, lr_mlp=3e-5,
                  mlp_name='siren', mlp_hidden_features=256, mlp_hidden_layers=2,
-                 key_noise=1e-3, warmup_steps=2000, separate_decoders=True, pa_sigma=0., align_corners=False,
+                 key_noise=1e-3, warmup_steps=2000, separate_decoders=True,
                  **kwargs):
         """
         :param emb_dim: number of embedding dimensions
@@ -41,13 +41,11 @@ class SurfaceEmbeddingModel(pl.LightningModule):
         self.warmup_steps = warmup_steps
         self.key_noise = key_noise
         self.separate_decoders = separate_decoders
-        self.pa_sigma = pa_sigma
 
         # query model
         self.cnn = ResNetUNet(
             n_class=(emb_dim + 1) if separate_decoders else n_objs * (emb_dim + 1),
             n_decoders=n_objs if separate_decoders else 1,
-            align_corners=align_corners,
         )
         # key models
         mlp_class = mlp_class_dict[mlp_name]
@@ -81,7 +79,7 @@ class SurfaceEmbeddingModel(pl.LightningModule):
                 A.GaussianBlur(blur_limit=(1, 3)),
             ])),
             random_crop_aux.apply_aux,
-            data.pose_auxs.ObjCoordAux(objs, crop_res, replace_mask=True, sigma=self.pa_sigma),
+            data.pose_auxs.ObjCoordAux(objs, crop_res, replace_mask=True),
             data.pose_auxs.SurfaceSampleAux(objs, self.n_neg),
             data.pose_auxs.MaskSamplesAux(self.n_pos),
             data.std_auxs.TransformsAux(tfms=A.Compose([
@@ -121,7 +119,7 @@ class SurfaceEmbeddingModel(pl.LightningModule):
         )
         return [opt], [sched]
 
-    def step(self, batch, log_suffix):
+    def step(self, batch, log_prefix):
         img = batch['rgb_crop']  # (B, 3, H, W)
         coord_img = batch['obj_coord']  # (B, H, W, 4) [-1, 1]
         obj_idx = batch['obj_idx']  # (B,)
@@ -166,9 +164,9 @@ class SurfaceEmbeddingModel(pl.LightningModule):
         nce_loss = F.cross_entropy(lgts, target)
 
         loss = mask_loss + nce_loss
-        self.log(f'loss_{log_suffix}', loss.item())
-        self.log(f'mask_loss_{log_suffix}', mask_loss.item())
-        self.log(f'nce_loss_{log_suffix}', nce_loss.item())
+        self.log(f'{log_prefix}/loss', loss)
+        self.log(f'{log_prefix}/mask_loss', mask_loss)
+        self.log(f'{log_prefix}/nce_loss', nce_loss)
         return loss
 
     def training_step(self, batch, _):

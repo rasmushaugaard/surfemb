@@ -14,7 +14,7 @@ def convrelu(in_channels, out_channels, kernel, padding):
 
 
 class ResNetUNet(nn.Module):
-    def __init__(self, n_class, feat_preultimate=64, n_decoders=1, align_corners=False):
+    def __init__(self, n_class, feat_preultimate=64, n_decoders=1):
         super().__init__()
 
         #  shared encoder
@@ -28,7 +28,7 @@ class ResNetUNet(nn.Module):
         self.layer4 = self.base_layers[7]  # size=(N, 512, x.H/32, x.W/32)
 
         #  n_decoders
-        self.upsample = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=align_corners)
+        self.upsample = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False)
         self.decoders = [dict(
             layer0_1x1=convrelu(64, 64, 1, 0),
             layer1_1x1=convrelu(64, 64, 1, 0),
